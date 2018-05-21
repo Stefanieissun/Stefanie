@@ -1,0 +1,34 @@
+// xzdrslhmdxiuhihh
+
+const nodemailer=require('nodemailer');
+const events=require('events');
+const eventEmitter=new events.EventEmitter();
+// eventEmitter.on('a'.function(){
+//     console.log(a);
+// });
+
+
+var transporter = nodemailer.createTransport({  
+  service: 'qq',  
+  auth: {  
+    user: '1150374016@qq.com',  
+    pass: 'xzdrslhmdxiuhihh' //授权码,通过QQ获取  
+  
+  }  
+  });  
+  var mailOptions = {  
+    from: '1150374016@qq.com', // 发送者  
+    to: '1150374016@qq.com', // 接受者,可以同时发送多个,以逗号隔开  
+    subject: 'nodemailer2.5.0邮件发送', // 标题  
+    //text: 'Hello world', // 文本  
+    html: `I'm a payphone try to call home all my change I spent on you`   
+  };  
+  
+  transporter.sendMail(mailOptions, function (err, info) {  
+    if (err) {  
+      console.log(err);  
+      return;  
+    }  
+  
+    console.log('发送成功');  
+  });  
