@@ -1,0 +1,75 @@
+// 检测数据类型
+const checkDataType = Data => {
+    let {
+        toString
+    } = Object.prototype;
+    let DataType = toString.call(Data);
+    return DataType;
+}
+console.log(checkDataType([1, 2, 3]));
+
+// 作用域安全的构造函数
+
+// 构造函数其实就是一个使用new操作符调用的函数。 当使用new调用时,
+//  构造函数内用到的this对象会指向新创建的对象实例
+// 当你使用new操作符的时候， 就会创建一个新的Person对象，
+//  同时分配这些属性， 但是如果你没有使用new
+//  let person = Person("addone", 20);
+
+//  person1.name // Cannot read property 'name' of undefined
+//  window.name // addone
+//  这是因为this是在执行时确认的， 当你没有使用new，
+//   那么this在当前情况下就被解析成了window， 
+//   属性就被分配到window上了
+//  作用域安全的构造函数在进行更改前， 首先确认this对象是正确类型的实例，
+//   如果不是， 就创建新的对象并且返回
+{
+    function Person(name, age) {
+        if (this instanceof Person) {
+            this.name = name;
+            this.age = age;
+        } else {
+            return new Person(name, age);
+        }
+    }
+    let p1 = new Person('adone', 12);
+    let p2 = Person('bob', 22);
+    console.log(p1);
+    console.log(p2);
+}
+
+
+//数组平均数
+const averagerArr = arr => arr.reduce((acc, val) => acc + val, 0) / arr.length; {
+    console.log('数组平均数:' + averagerArr([1, 2, 4, 3]));
+}
+// 过滤数组中的非唯一值
+const filterNonUnique = arr => arr.filter(i => arr.indexOf(i) === arr.lastIndexOf(i)); {
+    console.log('过滤数组中的非唯一值:' + filterNonUnique([1, 2, 3, 5, 2, 3, 4]));
+}
+// 最大公约数
+const gcd = (x, y) => !y ? x : gcd(y, x % y); {
+    console.log('16和18的最大公约数：' + gcd(18, 16));
+}
+// 范围内随机整数
+const randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min; {
+    console.log('1~10随机整数：' + randomIntegerInRange(1, 10));
+}
+
+// 界面滚动到顶部
+const scrollToTop = _ => {
+    const c = document.documentElement.scrollTop || document.body.scrollTop;
+    if (c > 0) {
+        window.requestAnimationFrame(scrollToTop);
+        window.scrollTo(0, c - c / 8);
+    }
+};
+
+{
+    // 取整数
+    let a = ~~2.33,
+        b = 2.33 | 0,
+        c = 2.33 >> 0;
+    console.log(a, b, c);
+}
+console.log((0.1 + 0.2 - 0.3) - Number.EPSILON);
