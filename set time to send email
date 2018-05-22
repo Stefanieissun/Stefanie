@@ -1,0 +1,45 @@
+const nodemailer = require("nodemailer");
+const events = require("events");
+const eventEmitter = new events.EventEmitter();
+//实现发送邮件的具体方法
+const sendEmail = (receiver, content) => {
+    var transporter = nodemailer.createTransport({
+        service: "qq",
+        auth: {
+            user: "1150374016@qq.com",
+            pass: "xzdrslhmdxiuhihh" //授权码,通过QQ获取
+        }
+    });
+    var mailOptions = {
+        from: `1150374016@qq.com`, // 发送者
+        to: receiver, // 接受者,可以同时发送多个,以逗号隔开
+        subject: "nodemailer2.5.0邮件发送测试", // 标题
+        //text: 'Hello world', // 文本
+        html: `${content}`
+    };
+
+    transporter.sendMail(mailOptions, function (err, info) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        console.log("发送成功,当前时间为:" + new Date().toLocaleString());
+    });
+};
+
+eventEmitter.on('sendemail', sendEmail);
+
+
+
+function sendtime(stringTime) {
+    var setTime = new Date(stringTime).getTime();
+    var currentTime = new Date().getTime();
+    var interval = setTime - currentTime;
+    setTimeout(() => {
+        //接受者和发送内容 
+        eventEmitter.emit("sendemail", `1150374016@qq.com`, `It's a test demo email from autoprogramm`);
+    }, setTime - currentTime);
+}
+//时间格式是"2018/5/22 15:32:53"
+sendtime("2018/5/22 15:32:53");
