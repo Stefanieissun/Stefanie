@@ -1,0 +1,73 @@
+代理模式是为一个对象提供一个代用品或占位符，以便控制对它的访问。
+代理模式是一种非常有意义的模式，在生活中可以找到很多代理模式的场景。比如，明星都
+有经纪人作为代理。如果想请明星来办一场商业演出，只能联系他的经纪人。经纪人会把商业演
+出的细节和报酬都谈好之后，再把合同交给明星签。
+代理模式的关键是，当客户不方便直接访问一个对象或者不满足需要的时候，提供一个替身
+对象来控制对这个对象的访问，客户实际上访问的是替身对象。替身对象对请求做出一些处理之
+后，再把请求转交给本体对象。
+
+
+
+1 虚拟代理实现图片预加载
+在 Web 开发中，图片预加载是一种常用的技术，如果直接给某个 img 标签节点设置 src 属性，
+由于图片过大或者网络不佳，图片的位置往往有段时间会是一片空白。常见的做法是先用一张
+loading 图片占位，然后用异步的方式加载图片，等图片加载好了再把它填充到 img 节点里，这种
+场景就很适合使用虚拟代理。
+var myImage = (function(){
+ var imgNode = document.createElement( 'img' );
+ document.body.appendChild( imgNode );
+ return {
+ setSrc: function( src ){
+ imgNode.src = src;
+ }
+ }
+})();
+var proxyImage = (function(){
+ var img = new Image;
+ img.onload = function(){
+ myImage.setSrc( this.src );
+ }
+ return {
+ setSrc: function( src ){
+ myImage.setSrc( 'file:// /C:/Users/svenzeng/Desktop/loading.gif' );
+ img.src = src;
+ }
+ }
+})();
+proxyImage.setSrc( 'http:// imgcache.qq.com/music/photo/k/000GGDys0yA0Nk.jpg' );
+现在我们通过 proxyImage 间接地访问 MyImage。proxyImage 控制了客户对 MyImage 的访问，并
+且在此过程中加入一些额外的操作，比如在真正的图片加载好之前，先把 img 节点的 src 设置为
+一张本地的 loading 图片。
+2缓存代理  计算量重复的不必再次计算
+var mult = function(){
+ var a = 1;
+ for ( var i = 0, l = arguments.length; i < l; i++ ){
+ a = a * arguments[i];
+ }
+ return a;
+};
+/**************** 计算加和 *****************/
+var plus = function(){
+ var a = 0;
+ for ( var i = 0, l = arguments.length; i < l; i++ ){
+ a = a + arguments[i];
+ }
+ return a;
+};
+/**************** 创建缓存代理的工厂 *****************/
+var createProxyFactory = function( fn ){
+ var cache = {};
+ return function(){
+ var args = Array.prototype.join.call( arguments, ',' );
+ if ( args in cache ){
+ return cache[ args ];
+ }
+ return cache[ args ] = fn.apply( this, arguments );
+ }
+};
+var proxyMult = createProxyFactory( mult ),
+proxyPlus = createProxyFactory( plus );
+alert ( proxyMult( 1, 2, 3, 4 ) ); // 输出：24
+alert ( proxyMult( 1, 2, 3, 4 ) ); // 输出：24
+alert ( proxyPlus( 1, 2, 3, 4 ) ); // 输出：10
+alert ( proxyPlus( 1, 2, 3, 4 ) ); // 输出：10
