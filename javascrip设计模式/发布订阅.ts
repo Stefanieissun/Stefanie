@@ -1,6 +1,8 @@
-
+interface eventContentType{
+    [index:string]:Function[]
+}
 class EventLike{
-    private content:any
+    private content:eventContentType
     constructor() {
         this.content={}
     }
@@ -17,9 +19,7 @@ class EventLike{
      emitEvent(methodName:string){
         if(Object.keys(this.content).includes(methodName)){
             console.log('有监听这个事件，开始执行');
-           for(let i of this.content[methodName]){
-               i();
-           }
+           this.content[methodName].map(x=>x());
            return null;
         }
         console.log('没有注册此类事件');
